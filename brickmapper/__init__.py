@@ -12,7 +12,7 @@ from typing import Optional, List, Dict, Iterable
 from rdflib import Graph, BRICK
 from rdflib.term import Node
 from dataclasses import dataclass, field
-
+from pprint import pprint
 
 @dataclass(unsafe_hash=True)
 class BrickClassDefinition:
@@ -145,20 +145,17 @@ class Mapper:
         mapping = {}
 
         for defn in tqdm(brick_classes):
-            # embedding = self.get_embedding(f"{defn.class_} {defn.label} {defn.definition}".strip())
-            embedding = self.brick_index.get(
-                np.array([self._hashbrick(defn.class_)], dtype=np.uint64)
-            )
+            defn_key = np.array([self._hashbrick(defn.class_)], dtype=np.uint64)
+            embedding = self.brick_index.get(defn_key)
             if not embedding or embedding[0] is None:
                 continue
+
             recommendations = self.external_index.search(embedding[0], count=top_k)
-            best_labels = []
-            for idx, external_match in enumerate(recommendations.keys):
-                if recommendations.distances[idx] < threshold:
-                    best_labels.append(external_match)
-            kept_recs = [self.external_lookup[idx] for idx in best_labels]
-            mapping[defn.class_] = kept_recs
+            best_recommendations = [r for r in recommendations if r.distance < threshold]
+            mapping[defn.class_] = [(self.external_lookup[r.key], r.distance) for r in best_recommendations]
+
         self.external_to_brick_mapping = mapping
+
         return mapping
 
     def get_mapping(
@@ -193,11 +190,14 @@ class Mapper:
         for class_, candidates in self.external_to_brick_mapping.items():
             if not len(candidates):
                 continue
-            inverse_mapping[candidates[0]].append(class_)
+            (best_candidate, best_score) = candidates[0]
+            inverse_mapping[best_candidate].append((class_, best_score))
+
         # figure out which Brick class has the highest score for each external concept
         singular_inverse_mapping: Dict[str, Node] = {}
         for cw_class, brick_classes in inverse_mapping.items():
             # sort based on decreasing vector distance ('score')
             brick_classes = sorted(brick_classes, key=lambda x: x[1], reverse=True)
             singular_inverse_mapping[cw_class] = brick_classes[0]
+
         return singular_inverse_mapping
