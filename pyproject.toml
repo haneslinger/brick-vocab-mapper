@@ -19,6 +19,7 @@ usearch = "^1.1.1"
 [tool.poetry.group.dev.dependencies]
 q = "^2.7"
 black = "^23.7.0"
+jupyter = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]
