@@ -14,6 +14,7 @@ tqdm = "^4.65.0"
 fnvhash = "^0.1.0"
 loguru = "^0.7.0"
 usearch = "^1.1.1"
+xmltodict = "^0.14.2"
 
 
 [tool.poetry.group.dev.dependencies]

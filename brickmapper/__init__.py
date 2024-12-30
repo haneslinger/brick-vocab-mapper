@@ -14,6 +14,7 @@ from rdflib.term import Node
 from dataclasses import dataclass, field
 from pprint import pprint
 
+
 @dataclass(unsafe_hash=True)
 class BrickClassDefinition:
     class_: Node
@@ -30,6 +31,8 @@ class Mapper:
         definitions: List[Dict[str, dict]],
         external_index_file: str = "external.index",
     ):
+        openai.api_key = os.environ["OPENAI_API_KEY"]
+
         # load in Brick
         self.g = Graph()
         self.g.parse(
@@ -173,6 +176,7 @@ class Mapper:
         self.populate_brick_embeddings(bcs)
         if allow_collisions:
             return self._get_best_external_to_brick_mapping(bcs)
+
         join = self.external_index.join(self.brick_index)
         return {
             str(self.external_lookup[external_id]): self.brick_lookup[brick_id]
@@ -191,7 +195,7 @@ class Mapper:
             if not len(candidates):
                 continue
             (best_candidate, best_score) = candidates[0]
-            inverse_mapping[best_candidate].append((class_, best_score))
+            inverse_mapping[best_candidate].append((str(class_), best_score))
 
         # figure out which Brick class has the highest score for each external concept
         singular_inverse_mapping: Dict[str, Node] = {}
