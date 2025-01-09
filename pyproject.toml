@@ -7,7 +7,7 @@ license = "bsd-3-clause"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.12"
+python = ">=3.10,<3.12"
 openai = "^0.27.8"
 rdflib = "^7.0.0"
 tqdm = "^4.65.0"
@@ -15,6 +15,7 @@ fnvhash = "^0.1.0"
 loguru = "^0.7.0"
 usearch = "^1.1.1"
 xmltodict = "^0.14.2"
+matplotlib = "^3.10.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -138,6 +138,17 @@ class BedesParser(object):
                         self.enumerations.append(assembled)
 
 
+    def _get_term_definitions(self):
+        return [
+            {
+                "name": str(term["Term"]),
+                "category": str(term["Category"]),
+                "term_definition": str(term["Term-Definition"])
+            }
+            for term in self.terms
+        ]
+
+
 if __name__ == '__main__':
     bedes = BedesParser('v2.2')
     bedes.save()
