@@ -1,5 +1,6 @@
 from lxml import etree
-x
+from pathlib import Path
+
 file_etree = etree.parse(Path(__file__).parent  / "BuildingSync.sxd")
 ns = file_etree.getroot().nsmap
 
