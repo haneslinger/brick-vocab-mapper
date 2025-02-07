@@ -13,7 +13,7 @@ class BuildingSyncParser:
                 documentation = element.find("./xs:annotation/xs:documentation", namespaces=ns)
                 documentation =  "" if documentation is None else documentation.text
 
-                defns.append({"name": name, "term_definition": documentation})
+                defns.append({"name": name, "definition": documentation})
         
         return defns
                 

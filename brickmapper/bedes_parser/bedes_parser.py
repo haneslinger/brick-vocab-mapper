@@ -132,7 +132,7 @@ class BedesParser(object):
                 if term.get('list_options', None):
                     for lo in term['list_options']:
                         # collect only specific fields from the terms
-                        assembled = {}
+                        assembled = {"term": term["Term"]}
                         for t_name in ['List-Option', 'Content-UUID', 'URL', 'List-Option-Definition', 'Related-Term-UUID']:
                             assembled[t_name] = lo[t_name]
                         self.enumerations.append(assembled)
@@ -143,9 +143,19 @@ class BedesParser(object):
             {
                 "name": str(term["Term"]),
                 "category": str(term["Category"]),
-                "term_definition": str(term["Term-Definition"])
+                "definition": str(term["Term-Definition"])
             }
             for term in self.terms
+        ]
+    
+    def _get_enumeration_definitions(self):
+        return [
+            {
+                "name": str(enum["List-Option"]),
+                "category": str(enum["term"]),
+                "definition": str(enum["List-Option-Definition"])
+            }
+            for enum in self.enumerations
         ]
 
 

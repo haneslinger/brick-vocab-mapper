@@ -81,3 +81,20 @@ class Mapper:
             mapping[name] = [(self.second_definitions[r.key]["name"], r.distance) for r in best_recommendations]
 
         return mapping
+    
+    def get_mappings_for_single_definition(self, definition, top_k=3, threshold=0.8) -> Dict[Node, List[dict]]:
+        name = definition.pop("name")
+        values = filter(lambda x: x and len(x), definition.values())
+        text = f"{name} {' '.join(values)}".strip()
+        embedding = self.get_embedding(text)
+
+        recommendations = self.second_index.search(embedding, count=top_k)
+        best_recommendations = [r for r in recommendations if r.distance < threshold]
+
+        return [(self.second_definitions[r.key]["name"], r.distance) for r in best_recommendations]
+
+
+
+
+
+
