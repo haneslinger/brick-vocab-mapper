@@ -78,7 +78,7 @@ class Mapper:
             recommendations = self.second_index.search(embedding, count=top_k)
             best_recommendations = [r for r in recommendations if r.distance < threshold]
 
-            mapping[name] = [(self.second_definitions[r.key]["name"], r.distance) for r in best_recommendations]
+            mapping[name] = [(self.second_definitions[r.key]["name"], r.distance.round(decimals=2)) for r in best_recommendations]
 
         return mapping
     
